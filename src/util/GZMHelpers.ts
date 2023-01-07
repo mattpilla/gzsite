@@ -27,6 +27,13 @@ type GZM = {
   lastRecordedFrame: number;
 };
 
+export class GZMError extends Error {
+  constructor(m: string) {
+    super(m);
+    Object.setPrototypeOf(this, GZMError.prototype);
+  }
+}
+
 const N_INPUT_ADDR = 0;
 const N_SEED_ADDR = 0x4;
 // const STARTING_INPUT_ADDR = 0x8; // TODO
