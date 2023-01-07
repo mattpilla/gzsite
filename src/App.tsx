@@ -16,9 +16,13 @@ const App = () => {
   };
 
   return (
-    <div>
-      <FileUpload onUpload={onUpload} />
-    </div>
+    <>
+      <FileUpload
+        accept=".gzm"
+        label="Upload gz macro (.gzm)"
+        onUpload={onUpload}
+      />
+    </>
   );
 };
 
