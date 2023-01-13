@@ -1,4 +1,4 @@
-import { getGZM, GZMError, type GZM } from '@/util/GZMHelpers';
+import { EXTENSION, getGZM, GZMError, type GZM } from '@/util/GZMHelpers';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import FileUpload from '@/components/FileUpload';
@@ -16,11 +16,7 @@ const App = () => {
     }
     toast.dismiss();
     try {
-      if (!file.name.endsWith('.gzm')) {
-        throw new GZMError('Filename must end with .gzm');
-      }
-      const bytes = new DataView(await file.arrayBuffer());
-      setGZM(getGZM(bytes));
+      setGZM(await getGZM(file));
     } catch (e) {
       console.error(e);
       const message =
@@ -35,8 +31,8 @@ const App = () => {
     }
     return (
       <FileUpload
-        accept=".gzm"
-        label="Upload gz macro (.gzm)"
+        accept={EXTENSION}
+        label={`Upload gz macro (${EXTENSION})`}
         onUpload={onUpload}
       />
     );

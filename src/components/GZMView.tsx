@@ -1,4 +1,5 @@
-import { toHex, type GZM } from '@/util/GZMHelpers';
+import { type GZM } from '@/util/GZMHelpers';
+import { toHex } from '@/util/Helpers';
 import styled from 'styled-components';
 
 type GZMViewPropsType = {

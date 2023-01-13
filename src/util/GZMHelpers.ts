@@ -1,3 +1,5 @@
+import { downloadFile } from '@/util/Helpers';
+
 type Input = {
   digital: number;
   analog: number;
@@ -14,7 +16,7 @@ type Seed = {
 };
 
 export type GZM = {
-  filename?: string; // TODO
+  filename: string;
   totalInputs: number;
   totalSeeds: number;
   startingInput: Input;
@@ -34,8 +36,7 @@ export class GZMError extends Error {
   }
 }
 
-export const toHex = (n: number): string => `0x${n.toString(16)}`;
-
+export const EXTENSION = '.gzm';
 const N_INPUT_ADDR = 0;
 const N_SEED_ADDR = 0x4;
 const STARTING_INPUT_ADDR = 0x8;
@@ -54,7 +55,12 @@ const getSeedsAddr = (totalInputs: number): number =>
 const getMetaAddr = (seedsAddr: number, totalSeeds: number): number =>
   seedsAddr + totalSeeds * SEED_LENGTH;
 
-export const getGZM = (bytes: DataView): GZM => {
+export const getGZM = async (file: File): Promise<GZM> => {
+  if (!file.name.endsWith(EXTENSION)) {
+    throw new GZMError(`Filename must end with ${EXTENSION}`);
+  }
+  const filename = file.name.slice(0, -EXTENSION.length);
+  const bytes = new DataView(await file.arrayBuffer());
   const totalInputs = bytes.getUint32(N_INPUT_ADDR);
   const totalSeeds = bytes.getUint32(N_SEED_ADDR);
   const seedsAddr = getSeedsAddr(totalInputs);
@@ -84,6 +90,7 @@ export const getGZM = (bytes: DataView): GZM => {
   }
 
   return {
+    filename,
     totalInputs,
     totalSeeds,
     startingInput,
@@ -97,7 +104,7 @@ export const getGZM = (bytes: DataView): GZM => {
   };
 };
 
-export const getGZMAsBytes = (gzm: GZM): void => {
+const getGZMAsBytes = (gzm: GZM): DataView => {
   const byteLength =
     INPUTS_ADDR +
     gzm.totalInputs * INPUT_LENGTH +
@@ -128,18 +135,11 @@ export const getGZMAsBytes = (gzm: GZM): void => {
   bytes.setUint32(metaAddr + N_ROOM_LOAD_OFFSET, gzm.nRoomLoad);
   bytes.setUint32(metaAddr + RERECORDS_OFFSET, gzm.rerecords);
   bytes.setUint32(metaAddr + LAST_RECORDED_FRAME_OFFSET, gzm.lastRecordedFrame);
-  downloadObject(bytes, 'test.gzm');
+  return bytes;
 };
 
-// TODO move to gen utils
-// TODO make more generic
-function downloadObject(obj: DataView, filename: string) {
-  const blob = new Blob([obj.buffer], { type: 'application/octet-stream' });
-  const url = URL.createObjectURL(blob);
-  const elem = document.createElement('a');
-  elem.href = url;
-  elem.download = filename;
-  document.body.appendChild(elem);
-  elem.click();
-  document.body.removeChild(elem);
-}
+export const downloadGZM = (gzm: GZM): void => {
+  const bytes = getGZMAsBytes(gzm);
+  const blob = new Blob([bytes.buffer], { type: 'application/octet-stream' });
+  downloadFile(blob, gzm.filename);
+};
