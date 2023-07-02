@@ -6,7 +6,7 @@
   "scripts": {
     "start": "yarn dev",
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build && cp CNAME dist/",
     "preview": "vite preview",
     "deploy": "gh-pages -d dist",
     "prettier": "prettier --write .",
