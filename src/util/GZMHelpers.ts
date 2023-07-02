@@ -141,5 +141,5 @@ const getGZMAsBytes = (gzm: GZM): DataView => {
 export const downloadGZM = (gzm: GZM): void => {
   const bytes = getGZMAsBytes(gzm);
   const blob = new Blob([bytes.buffer], { type: 'application/octet-stream' });
-  downloadFile(blob, gzm.filename);
+  downloadFile(blob, gzm.filename + EXTENSION);
 };

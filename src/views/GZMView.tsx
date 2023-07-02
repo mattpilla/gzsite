@@ -1,10 +1,14 @@
-import { type GZM } from '@/util/GZMHelpers';
+import { downloadGZM, EXTENSION, type GZM } from '@/util/GZMHelpers';
 import { toHex } from '@/util/Helpers';
 import styled from 'styled-components';
 
 type GZMViewPropsType = {
   gzm: GZM;
 };
+
+const Container = styled.div`
+  margin: 32px;
+`;
 
 const SeedsContainer = styled.div`
   margin-left: 16px;
@@ -22,19 +26,36 @@ const GZMView = (props: GZMViewPropsType) => {
     ));
 
   return (
-    <div>
+    <Container>
+      <button onClick={() => downloadGZM(gzm)}>Download</button>
+      <li>
+        filename:{' '}
+        <input
+          type="text"
+          value={gzm.filename}
+          onChange={(e) => (gzm.filename = e.target.value)}
+        />
+        {EXTENSION}
+      </li>
       <li>n_input: {gzm.totalInputs}</li>
       <li>n_seed: {gzm.totalSeeds}</li>
       <li>n_oca_input: {gzm.nOcaInput}</li>
       <li>n_oca_sync: {gzm.nOcaSync}</li>
       <li>n_room_load: {gzm.nRoomLoad}</li>
-      <li>rerecords: {gzm.rerecords}</li>
+      <li>
+        rerecords:{' '}
+        <input
+          type="number"
+          value={gzm.rerecords}
+          onChange={(e) => (gzm.rerecords = Number.parseInt(e.target.value))}
+        />
+      </li>
       <li>last_recorded_frame: {gzm.lastRecordedFrame}</li>
       <div>
         gzm has {gzm.totalSeeds} seeds:
         <SeedsContainer>{renderSeeds()}</SeedsContainer>
       </div>
-    </div>
+    </Container>
   );
 };
 

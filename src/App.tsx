@@ -1,8 +1,8 @@
 import { EXTENSION, getGZM, GZMError, type GZM } from '@/util/GZMHelpers';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { useState } from 'react';
-import FileUpload from '@/components/FileUpload';
-import GZMView from '@/components/GZMView';
+import FileUpload from '@/views/FileUpload';
+import GZMView from '@/views/GZMView';
 import 'react-toastify/dist/ReactToastify.css';
 import 'the-new-css-reset/css/reset.css';
 
