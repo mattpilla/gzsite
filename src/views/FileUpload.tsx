@@ -10,7 +10,9 @@ type FileUploadPropsType = {
 
 const Container = styled.div`
   display: grid;
+  position: absolute;
   height: 100%;
+  width: 100%;
 
   .file-drop {
     display: flex;

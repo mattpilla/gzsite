@@ -1,4 +1,4 @@
-import { EXTENSION, getGZM, GZMError, type GZM } from '@/util/GZMHelpers';
+import { EXTENSION, getFileAsGZM, GZMError, type GZM } from '@/util/GZMHelpers';
 import { Slide, toast, ToastContainer } from 'react-toastify';
 import { useState } from 'react';
 import FileUpload from '@/views/FileUpload';
@@ -16,7 +16,7 @@ const App = () => {
     }
     toast.dismiss();
     try {
-      setGZM(await getGZM(file));
+      setGZM(await getFileAsGZM(file));
     } catch (e) {
       console.error(e);
       const message =

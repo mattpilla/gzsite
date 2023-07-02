@@ -55,12 +55,19 @@ const getSeedsAddr = (totalInputs: number): number =>
 const getMetaAddr = (seedsAddr: number, totalSeeds: number): number =>
   seedsAddr + totalSeeds * SEED_LENGTH;
 
-export const getGZM = async (file: File): Promise<GZM> => {
+// convert GZM file to GZM object
+export const getFileAsGZM = async (file: File): Promise<GZM> => {
   if (!file.name.endsWith(EXTENSION)) {
     throw new GZMError(`Filename must end with ${EXTENSION}`);
   }
   const filename = file.name.slice(0, -EXTENSION.length);
   const bytes = new DataView(await file.arrayBuffer());
+
+  return getBytesAsGZM(bytes, filename);
+};
+
+// convert bytes to GZM object
+export const getBytesAsGZM = (bytes: DataView, filename: string): GZM => {
   const totalInputs = bytes.getUint32(N_INPUT_ADDR);
   const totalSeeds = bytes.getUint32(N_SEED_ADDR);
   const seedsAddr = getSeedsAddr(totalInputs);
@@ -104,7 +111,8 @@ export const getGZM = async (file: File): Promise<GZM> => {
   };
 };
 
-const getGZMAsBytes = (gzm: GZM): DataView => {
+// convert GZM object back to bytes
+export const getGZMAsBytes = (gzm: GZM): DataView => {
   const byteLength =
     INPUTS_ADDR +
     gzm.totalInputs * INPUT_LENGTH +
